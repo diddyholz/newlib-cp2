@@ -40,8 +40,7 @@ libc_a_SOURCES += \
 	%D%/gdtoa-dmisc.c \
 	%D%/gdtoa-gmisc.c \
 	%D%/mallinfor.c \
-	%D%/malloc.c \
-	%D%/mallocr.c \
+	%D%/cas_malloc.S \
 	%D%/mallstatsr.c \
 	%D%/mblen.c \
 	%D%/mblen_r.c \
@@ -216,7 +215,6 @@ LIBC_CHEWOUT_FILES += \
 	%D%/ldiv.def \
 	%D%/llabs.def \
 	%D%/lldiv.def \
-	%D%/malloc.def \
 	%D%/mblen.def \
 	%D%/mbsnrtowcs.def \
 	%D%/mbstowcs.def \
