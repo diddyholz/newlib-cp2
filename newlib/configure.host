@@ -323,6 +323,9 @@ case "${host_cpu}" in
   sh | sh64)
 	machine_dir=sh
 	;;
+  sh4)
+	machine_dir=sh4
+	;;
   sparc*)
 	libm_machine_dir=sparc
 	machine_dir=sparc
@@ -543,6 +546,9 @@ case "${host}" in
 	;;
   powerpcle-*-pe)
 	posix_dir=posix
+	;;
+  sh4-*)
+	sys_dir=sh
 	;;
   sh*-*)
 	sys_dir=sh
