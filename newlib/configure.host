@@ -325,6 +325,8 @@ case "${host_cpu}" in
 	;;
   sh4)
 	machine_dir=sh4
+	newlib_cflags="${newlib_cflags} -DMALLOC_PROVIDED "
+    -DMALLOC_PROVIDED 
 	;;
   sparc*)
 	libm_machine_dir=sparc
@@ -549,6 +551,7 @@ case "${host}" in
 	;;
   sh4-*)
 	sys_dir=sh
+	newlib_cflags="${newlib_cflags} -DMALLOC_PROVIDED "
 	;;
   sh*-*)
 	sys_dir=sh

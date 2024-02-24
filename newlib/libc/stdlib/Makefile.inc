@@ -40,6 +40,8 @@ libc_a_SOURCES += \
 	%D%/gdtoa-dmisc.c \
 	%D%/gdtoa-gmisc.c \
 	%D%/mallinfor.c \
+    %D%/malloc.c \
+	%D%/mallocr.c \
 	%D%/cas_malloc.S \
 	%D%/mallstatsr.c \
 	%D%/mblen.c \
