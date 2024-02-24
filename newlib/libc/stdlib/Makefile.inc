@@ -42,7 +42,6 @@ libc_a_SOURCES += \
 	%D%/mallinfor.c \
     %D%/malloc.c \
 	%D%/mallocr.c \
-	%D%/cas_malloc.S \
 	%D%/mallstatsr.c \
 	%D%/mblen.c \
 	%D%/mblen_r.c \
