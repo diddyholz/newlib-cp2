@@ -7,7 +7,8 @@ _start:
     jmp     @r0
     nop
 
-.align 4
+! This should be long aligned, however the assembler would add a too large padding
+.align 2 
 start_address:
 .long  actual_start
 
@@ -47,8 +48,8 @@ start_l:
 	jsr	    @r0
 	nop
 
-.global exit_address
-exit_address:
+.global _exit_address
+_exit_address:
     ! restore stack pointer
     mov.l   sp_bak, r15
 

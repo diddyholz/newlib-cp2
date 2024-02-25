@@ -212,7 +212,7 @@ _sbrk (int incr)
 void
 _exit (int status)
 {
-  exit_address();
+  _exit_address();
 }
 
 int
