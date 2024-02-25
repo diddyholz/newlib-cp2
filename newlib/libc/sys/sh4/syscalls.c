@@ -377,10 +377,10 @@ usleep (useconds_t usec)
   _gettimeofday(&starttime, NULL);
 
   /* FIXME: This will break when it is called while the counter underflows */
-  while ((curtime.tv_usec - starttime.tv_usec) < usec) 
+  do 
   { 
     _gettimeofday(&curtime, NULL);
-  }
+  } while ((curtime.tv_usec - starttime.tv_usec) < usec);
 
   return 0;  
 }
