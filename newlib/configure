@@ -5449,7 +5449,7 @@ else
   HAVE_LIBC_SYS_RTEMS_DIR_TRUE='#'
   HAVE_LIBC_SYS_RTEMS_DIR_FALSE=
 fi
- if test "${sys_dir}" = sh; then
+ if test "${sys_dir}" = sh4; then
   HAVE_LIBC_SYS_SH4_DIR_TRUE=
   HAVE_LIBC_SYS_SH4_DIR_FALSE='#'
 else
