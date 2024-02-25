@@ -2,7 +2,7 @@
 
 #include <stdint.h>
 
-#define TMU_TICKS_PER_USEC  8
+#define TMU_TICKS_PER_USEC  7
 #define TMU_TICKS_PER_SEC   TMU_TICKS_PER_USEC * 1000 * 1000
 
 typedef enum 
