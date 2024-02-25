@@ -20,12 +20,6 @@ _free_r (struct _reent *reent,
 }
 
 void *
-calloc (size_t size) 
-{
-    return _calloc_r(_REENT, size);
-}
-
-void *
 _calloc_r (struct _reent *reent, 
     size_t size) 
 {
@@ -34,10 +28,9 @@ _calloc_r (struct _reent *reent,
 }
 
 void *
-realloc (void *ptr, 
-    size_t size) 
+calloc (size_t size) 
 {
-    return _realloc_r(_REENT, ptr, size);
+    return _calloc_r(_REENT, size);
 }
 
 void *
@@ -67,4 +60,11 @@ _realloc_r (struct _reent *reent,
     free(ptr);
     
     return block;
+}
+
+void *
+realloc (void *ptr, 
+    size_t size) 
+{
+    return _realloc_r(_REENT, ptr, size);
 }
