@@ -62,7 +62,7 @@ cas_error_to_errno(int cas_result)
         break;
   }  
 
-  _set_errno(error);
+  errno = error;
 
   return -1;
 }
@@ -307,6 +307,6 @@ _times (struct tms *tp)
 int
 _gettimeofday (struct timeval *tv, void *tz)
 {
-  _set_errno(ENOSYS);
+  errno = ENOSYS;
   return -1;
 }
