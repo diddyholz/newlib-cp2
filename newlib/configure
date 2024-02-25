@@ -6058,7 +6058,7 @@ else
   HAVE_LIBC_MACHINE_RX_TRUE='#'
   HAVE_LIBC_MACHINE_RX_FALSE=
 fi
- if test "${machine_dir}" = sh; then
+ if test "${machine_dir}" = sh4; then
   HAVE_LIBC_MACHINE_SH4_TRUE=
   HAVE_LIBC_MACHINE_SH4_FALSE='#'
 else

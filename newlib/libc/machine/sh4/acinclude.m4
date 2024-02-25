@@ -1,4 +1,4 @@
-if test "${machine_dir}" = "sh"; then
+if test "${machine_dir}" = "sh4"; then
   AC_CACHE_CHECK([for SH5 (64-bit)], newlib_cv_sh64, [dnl
     AC_PREPROC_IFELSE([AC_LANG_PROGRAM(
 [[#if !defined(__SH5__)
