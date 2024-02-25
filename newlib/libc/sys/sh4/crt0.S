@@ -81,6 +81,7 @@ exit_k:
 sp_bak:
     .long   _sp_bak
 
-.section .bbs
+.align 4
+.section .data
 _sp_bak:
     .long   1
