@@ -362,7 +362,7 @@ _gettimeofday (struct timeval *tv, void *tz)
   if (tv)
   {
     uint32_t ticssincestart = 0xFFFFFFFF - *TMU_TCNT_2;
-    uint64_t tmp = ticssincestart * TMU_TICKS_PER_USEC;
+    uint64_t tmp = (uint64_t)ticssincestart * (uint64_t)TMU_TICKS_PER_USEC;
     tv->tv_usec = tmp / 4;
     tv->tv_sec = tv->tv_usec / (1000 * 1000);
   }
