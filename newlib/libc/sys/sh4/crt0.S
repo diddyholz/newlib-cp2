@@ -51,8 +51,8 @@ start_l:
 	jsr	    @r0
 	nop
 
-.global _exit_address
-_exit_address:
+.global __exit_address
+__exit_address:
     ! restore stack pointer
     mov.l   sp_bak, r8
     mov.l   @r8, r15
