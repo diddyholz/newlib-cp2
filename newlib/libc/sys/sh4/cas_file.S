@@ -1,6 +1,8 @@
-.include "_util.inc"
-
 ! file.s with os functions, imported from hollyhock sdk
+.macro DEFINE_OS_FUNC name, addr
+.globl _\name
+.set _\name, \addr
+.endm
 
 DEFINE_OS_FUNC cas_close 0x80057912
 DEFINE_OS_FUNC cas_findClose 0x8005A8BA
