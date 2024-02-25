@@ -5654,7 +5654,7 @@ else
 fi
 
 
-if test "${machine_dir}" = "sh"; then
+if test "${machine_dir}" = "sh4"; then
   { $as_echo "$as_me:${as_lineno-$LINENO}: checking for SH5 (64-bit)" >&5
 $as_echo_n "checking for SH5 (64-bit)... " >&6; }
 if ${newlib_cv_sh64+:} false; then :
