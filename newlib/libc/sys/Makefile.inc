@@ -37,8 +37,8 @@ endif
 if HAVE_LIBC_SYS_RTEMS_DIR
 include %D%/rtems/Makefile.inc
 endif
-if HAVE_LIBC_SYS_SH_DIR
-include %D%/sh/Makefile.inc
+if HAVE_LIBC_SYS_SH4_DIR
+include %D%/sh4/Makefile.inc
 endif
 if HAVE_LIBC_SYS_SYSMEC_DIR
 include %D%/sysmec/Makefile.inc

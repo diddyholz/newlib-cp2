@@ -20,7 +20,7 @@ m4_foreach_w([SYS_DIR], [
   netware
   or1k
   rdos rtems
-  sh sysmec sysnec810 sysnecv850 sysvi386 sysvnecv70
+  sh4 sysmec sysnec810 sysnecv850 sysvi386 sysvnecv70
   tic80 tirtos
   w65
   xtensa
@@ -37,7 +37,7 @@ dnl We have to include these unconditionally since machines might want to use
 dnl AM_CONDITIONAL in their subdirs.
 m4_include([libc/machine/nds32/acinclude.m4])
 m4_include([libc/machine/powerpc/acinclude.m4])
-m4_include([libc/machine/sh/acinclude.m4])
+m4_include([libc/machine/sh4/acinclude.m4])
 m4_include([libc/machine/spu/acinclude.m4])
 m4_include([libc/machine/xtensa/acinclude.m4])
 
@@ -56,7 +56,7 @@ m4_foreach_w([MACHINE], [
   or1k
   powerpc pru
   riscv rl78 rx
-  sh sparc spu
+  sh4 sparc spu
   tic4x tic6x tic80
   v850 visium
   w65

@@ -665,8 +665,8 @@ HAVE_LIBC_MACHINE_SPU_FALSE
 HAVE_LIBC_MACHINE_SPU_TRUE
 HAVE_LIBC_MACHINE_SPARC_FALSE
 HAVE_LIBC_MACHINE_SPARC_TRUE
-HAVE_LIBC_MACHINE_SH_FALSE
-HAVE_LIBC_MACHINE_SH_TRUE
+HAVE_LIBC_MACHINE_SH4_FALSE
+HAVE_LIBC_MACHINE_SH4_TRUE
 HAVE_LIBC_MACHINE_RX_FALSE
 HAVE_LIBC_MACHINE_RX_TRUE
 HAVE_LIBC_MACHINE_RL78_FALSE
@@ -793,8 +793,8 @@ HAVE_LIBC_SYS_SYSNEC810_DIR_FALSE
 HAVE_LIBC_SYS_SYSNEC810_DIR_TRUE
 HAVE_LIBC_SYS_SYSMEC_DIR_FALSE
 HAVE_LIBC_SYS_SYSMEC_DIR_TRUE
-HAVE_LIBC_SYS_SH_DIR_FALSE
-HAVE_LIBC_SYS_SH_DIR_TRUE
+HAVE_LIBC_SYS_SH4_DIR_FALSE
+HAVE_LIBC_SYS_SH4_DIR_TRUE
 HAVE_LIBC_SYS_RTEMS_DIR_FALSE
 HAVE_LIBC_SYS_RTEMS_DIR_TRUE
 HAVE_LIBC_SYS_RDOS_DIR_FALSE
@@ -5450,11 +5450,11 @@ else
   HAVE_LIBC_SYS_RTEMS_DIR_FALSE=
 fi
  if test "${sys_dir}" = sh; then
-  HAVE_LIBC_SYS_SH_DIR_TRUE=
-  HAVE_LIBC_SYS_SH_DIR_FALSE='#'
+  HAVE_LIBC_SYS_SH4_DIR_TRUE=
+  HAVE_LIBC_SYS_SH4_DIR_FALSE='#'
 else
-  HAVE_LIBC_SYS_SH_DIR_TRUE='#'
-  HAVE_LIBC_SYS_SH_DIR_FALSE=
+  HAVE_LIBC_SYS_SH4_DIR_TRUE='#'
+  HAVE_LIBC_SYS_SH4_DIR_FALSE=
 fi
  if test "${sys_dir}" = sysmec; then
   HAVE_LIBC_SYS_SYSMEC_DIR_TRUE=
@@ -6059,11 +6059,11 @@ else
   HAVE_LIBC_MACHINE_RX_FALSE=
 fi
  if test "${machine_dir}" = sh; then
-  HAVE_LIBC_MACHINE_SH_TRUE=
-  HAVE_LIBC_MACHINE_SH_FALSE='#'
+  HAVE_LIBC_MACHINE_SH4_TRUE=
+  HAVE_LIBC_MACHINE_SH4_FALSE='#'
 else
-  HAVE_LIBC_MACHINE_SH_TRUE='#'
-  HAVE_LIBC_MACHINE_SH_FALSE=
+  HAVE_LIBC_MACHINE_SH4_TRUE='#'
+  HAVE_LIBC_MACHINE_SH4_FALSE=
 fi
  if test "${machine_dir}" = sparc; then
   HAVE_LIBC_MACHINE_SPARC_TRUE=
@@ -7663,8 +7663,8 @@ if test -z "${HAVE_LIBC_SYS_RTEMS_DIR_TRUE}" && test -z "${HAVE_LIBC_SYS_RTEMS_D
   as_fn_error $? "conditional \"HAVE_LIBC_SYS_RTEMS_DIR\" was never defined.
 Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
-if test -z "${HAVE_LIBC_SYS_SH_DIR_TRUE}" && test -z "${HAVE_LIBC_SYS_SH_DIR_FALSE}"; then
-  as_fn_error $? "conditional \"HAVE_LIBC_SYS_SH_DIR\" was never defined.
+if test -z "${HAVE_LIBC_SYS_SH4_DIR_TRUE}" && test -z "${HAVE_LIBC_SYS_SH4_DIR_FALSE}"; then
+  as_fn_error $? "conditional \"HAVE_LIBC_SYS_SH4_DIR\" was never defined.
 Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 if test -z "${HAVE_LIBC_SYS_SYSMEC_DIR_TRUE}" && test -z "${HAVE_LIBC_SYS_SYSMEC_DIR_FALSE}"; then
@@ -7919,7 +7919,7 @@ if test -z "${HAVE_LIBC_MACHINE_RX_TRUE}" && test -z "${HAVE_LIBC_MACHINE_RX_FAL
   as_fn_error $? "conditional \"HAVE_LIBC_MACHINE_RX\" was never defined.
 Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
-if test -z "${HAVE_LIBC_MACHINE_SH_TRUE}" && test -z "${HAVE_LIBC_MACHINE_SH_FALSE}"; then
+if test -z "${HAVE_LIBC_MACHINE_SH4_TRUE}" && test -z "${HAVE_LIBC_MACHINE_SH4_FALSE}"; then
   as_fn_error $? "conditional \"HAVE_LIBC_MACHINE_SH\" was never defined.
 Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
