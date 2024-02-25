@@ -11,6 +11,9 @@ _start:
 .align 2 
 start_address:
 .long  actual_start
+! load address for hollyhock launcher
+load_address:
+.long  _start
 
 .section .text
 actual_start:
@@ -34,7 +37,7 @@ start_l:
 	bt	    start_l
 
     ! backup stack pointer and set return address for exit
-    mova    sp_bak, r0
+    mov.l   sp_bak, r0
     mov.l   r15, @r0
 
 	! call main
@@ -51,7 +54,8 @@ start_l:
 .global _exit_address
 _exit_address:
     ! restore stack pointer
-    mov.l   sp_bak, r15
+    mov.l   sp_bak, r8
+    mov.l   @r8, r15
 
     ! restore registers
     lds.l   @r15+, pr
@@ -66,8 +70,6 @@ _exit_address:
     nop
 
 .align 4
-sp_bak:
-    .long   0
 edata_k:
 	.long	_edata
 end_k:
@@ -76,3 +78,9 @@ main_k:
 	.long	_main
 exit_k:
 	.long	_exit
+sp_bak:
+    .long   _sp_bak
+
+.section .bbs
+_sp_bak:
+    .long   1
