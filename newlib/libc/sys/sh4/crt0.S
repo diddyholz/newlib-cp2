@@ -1,6 +1,18 @@
 .section .init
-.global	start
-start:
+.global	_start
+_start:
+    ! init for hollyhock is only 16 bytes large
+    ! therefore instantly jump to .text
+    mov.l   start_address, r0
+    jmp     @r0
+    nop
+
+.align 4
+start_address:
+.long  actual_start
+
+.section .text
+actual_start:
     ! backup registers
     mov.l   r13, @-r15
     mov.l   r12, @-r15
