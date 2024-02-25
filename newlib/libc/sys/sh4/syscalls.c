@@ -87,6 +87,13 @@ flags_to_cas_flags(int flags)
   return cas_flags;
 }
 
+void cas_stat_to_stat (struct cas_stat *cas_st, 
+    struct stat *st)
+{
+  memset(st, 0, sizeof(*st));
+  st->st_size = cas_st->fileSize;
+} 
+
 int 
 _read(
   int file, 
@@ -150,8 +157,6 @@ int
 _fstat(int file,
   struct stat *st)
 {
-  memset(st, 0, sizeof(*st));
-
   struct cas_stat stat;
   int ret = cas_fstat(file, &stat);
 
@@ -159,7 +164,23 @@ _fstat(int file,
     return cas_error_to_errno(ret);
   }
 
-  st->st_size = stat.fileSize;
+  cas_stat_to_stat(&stat, st);
+
+  return ret;
+}
+
+int
+_stat (const char *path, 
+  struct stat *st)
+{
+  struct cas_stat stat;
+  int ret = cas_stat(path, &stat);
+
+  if (ret < 0) {
+    return cas_error_to_errno(ret);
+  }
+
+  cas_stat_to_stat(&stat, st);
 
   return ret;
 }
@@ -210,25 +231,6 @@ int
 _raise ()
 {
   return -1;
-}
-
-int
-_stat (const char *path, 
-  struct stat *st)
-{
-  int fd = _open(path, O_RDONLY);
-  
-  if (fd < 0) 
-  {
-    return -1;
-  }
-
-  if (_fstat(fd, st) < 0)
-  {
-    return -1;
-  }
-
-  _close(fd);
 }
 
 int

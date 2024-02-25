@@ -54,7 +54,7 @@
  * @param date The date field from a @c struct @ref stat.
  * @return The year encoded in the date field.
  */
-uint16_t constexpr statDateYear(uint16_t date) {
+uint16_t statDateYear(uint16_t date) {
 	return ((date >> 9) & 0b1111111) + 1980;
 }
 
@@ -64,7 +64,7 @@ uint16_t constexpr statDateYear(uint16_t date) {
  * @param date The date field from a @c struct @ref stat.
  * @return The month encoded in the date field.
  */
-uint16_t constexpr statDateMonth(uint16_t date) {
+uint16_t statDateMonth(uint16_t date) {
 	return (date >> 5) & 0b1111;
 }
 
@@ -74,7 +74,7 @@ uint16_t constexpr statDateMonth(uint16_t date) {
  * @param date The date field from a @c struct @ref stat.
  * @return The day encoded in the date field.
  */
-uint16_t constexpr statDateDay(uint16_t date) {
+uint16_t statDateDay(uint16_t date) {
 	return date & 0b11111;
 }
 
@@ -84,7 +84,7 @@ uint16_t constexpr statDateDay(uint16_t date) {
  * @param time The time field from a @c struct @ref stat.
  * @return The hour encoded in the time field.
  */
-uint16_t constexpr statTimeHour(uint16_t time) {
+uint16_t statTimeHour(uint16_t time) {
 	return (time >> 11) & 0b11111;
 }
 
@@ -94,7 +94,7 @@ uint16_t constexpr statTimeHour(uint16_t time) {
  * @param time The time field from a @c struct @ref stat.
  * @return The minute encoded in the time field.
  */
-uint16_t constexpr statTimeMinute(uint16_t time) {
+uint16_t statTimeMinute(uint16_t time) {
 	return (time >> 5) & 0b111111;
 }
 
@@ -106,7 +106,7 @@ uint16_t constexpr statTimeMinute(uint16_t time) {
  * @param time The time field from a @c struct @ref stat.
  * @return The second encoded in the time field.
  */
-uint16_t constexpr statTimeSecond(uint16_t time) {
+uint16_t statTimeSecond(uint16_t time) {
 	return (time & 0b11111) * 2;
 }
 
@@ -217,6 +217,11 @@ struct cas_stat {
 	uint16_t lastAccessedDate;
 };
 
+enum FindEntryType {
+    EntryTypeFile = 0x1,
+    EntryTypeDirectory = 0x5
+};
+
 /**
  * Information about a file/directory, as returned from @ref findFirst or
  * @ref findNext.
@@ -225,10 +230,7 @@ struct findInfo {
 	uint8_t unknown0[4];
 
 	/// The type of entry which was located.
-	enum : uint16_t {
-		EntryTypeFile = 0x1,
-		EntryTypeDirectory = 0x5
-	} type;
+	enum FindEntryType type;
 
 	uint8_t unknown1[2];
 	
@@ -330,7 +332,7 @@ int cas_lseek(int fd, int offset, int whence);
  * @param[in] path The path to the directory to be created.
  * @return 0 on success, or a negative error code on failure.
  */
-int mkdir(const char *path);
+int cas_mkdir(const char *path);
 
 /**
  * Opens a file on the file system.
@@ -364,7 +366,7 @@ int cas_read(int fd, void *buf, int count);
  * @param[in] path The path to the file or directory to be deleted.
  * @return 0 on success, or a negative error code on failure.
  */
-int remove(const char *path);
+int cas_remove(const char *path);
 
 /**
  * Renames a file or directory.
@@ -373,7 +375,7 @@ int remove(const char *path);
  * @param[in] newPath The path to the new name for the file or directory.
  * @return 0 on success, or a negative error code on failure.
  */
-int rename(const char *oldPath, const char *newPath);
+int cas_rename(const char *oldPath, const char *newPath);
 
 /**
  * Retrieves information about a file.
@@ -382,7 +384,7 @@ int rename(const char *oldPath, const char *newPath);
  * @param[out] buf The retrieved information about the file.
  * @return 0 on success, or a negative error code on failure.
  */
-int stat(const char *path, struct stat *buf);
+int cas_stat(const char *path, struct stat *buf);
 
 /**
  * Writes @c count bytes from @c buf to a file.
