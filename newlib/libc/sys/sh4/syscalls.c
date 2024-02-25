@@ -6,9 +6,38 @@
 #include <fcntl.h>
 #include "cas_file.h"
 #include "crt0.h"
+#include "power.h"
+#include "tmu.h"
 
-/* This is used by _sbrk.  */
-register char *stack_ptr asm ("r15");
+uint32_t counter_underflows = 0;
+
+/* setup hardware */
+void 
+cas_setup()
+{
+  counter_underflows = 0;
+
+  POWER_MSTPCR0->TMU = 0;
+
+  TMU_TSTR->raw = 0;
+
+  /* Start TMU Channel 2 for time keeping */
+  TMU_TCR_2->raw;
+  TMU_TCR_2->TPSC = PHI_DIV_16;
+
+  *TMU_TCOR_2 = 0xFFFFFFFF;
+  *TMU_TCNT_2 = 0xFFFFFFFF;
+
+  TMU_TSTR->STR2 = 1;
+}
+
+/* cleanup hardware */
+void 
+cas_cleanup()
+{
+  TMU_TSTR->raw = 0;
+  POWER_MSTPCR0->TMU = 1;
+}
 
 /* convert cas file errors to errno */
 int 
@@ -67,6 +96,7 @@ cas_error_to_errno(int cas_result)
   return -1;
 }
 
+/* convert open flags to cas flags */
 int 
 flags_to_cas_flags(int flags) 
 {  
@@ -88,11 +118,27 @@ flags_to_cas_flags(int flags)
 }
 
 void cas_stat_to_stat (struct cas_stat *cas_st, 
-    struct stat *st)
+  struct stat *st)
 {
   memset(st, 0, sizeof(*st));
   st->st_size = cas_st->fileSize;
 } 
+
+int
+access (const char *path,
+  int mode)
+{
+  /* Mode can be ignored as we do not have permissions */
+  int fd = _open(path, O_RDONLY);
+
+  if (fd == -1) 
+  {
+    return -1;
+  }
+
+  _close(fd);
+  return 0;
+}
 
 int 
 _read(
@@ -204,7 +250,6 @@ _unlink()
 caddr_t 
 _sbrk (int incr)
 {
-  extern char end;		/* Defined by the linker */
   errno = ENOSYS;
   return -1;
 }
@@ -307,6 +352,35 @@ _times (struct tms *tp)
 int
 _gettimeofday (struct timeval *tv, void *tz)
 {
-  errno = ENOSYS;
-  return -1;
+  // Count up global counter if timer underflowed
+  if (TMU_TCR_2->UNF)
+  {
+    TMU_TCR_2->UNF = 0;
+    counter_underflows++;
+  }
+
+  if (tv)
+  {
+    uint32_t tics_since_start = 0xFFFFFFFF - *TMU_TCNT_2;
+    tv->tv_usec = tics_since_start / (TMU_TICKS_PER_USEC / 4);
+    tv->tv_sec = tv->tv_usec / (1000 * 1000);
+  }
+
+  return 0;
+}
+
+int 
+usleep (useconds_t usec)
+{
+  struct timeval starttime;
+  struct timeval curtime;
+  _gettimeofday(&starttime, NULL);
+
+  /* FIXME: This will break when it is called while the counter underflows */
+  while ((curtime.tv_usec - starttime.tv_usec) < usec) 
+  { 
+    _gettimeofday(&curtime, NULL);
+  }
+
+  return 0;  
 }

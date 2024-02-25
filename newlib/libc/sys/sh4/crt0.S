@@ -36,6 +36,10 @@ start_l:
 	cmp/ge	r0,r1
 	bt	    start_l
 
+    mov.l   cas_setup, r0
+    jsr     @r0
+    nop
+
     ! backup stack pointer and set return address for exit
     mov.l   sp_bak, r0
     mov.l   r15, @r0
@@ -56,6 +60,10 @@ __exit_address:
     ! restore stack pointer
     mov.l   sp_bak, r8
     mov.l   @r8, r15
+
+    mov.l   cas_cleanup, r0
+    jsr     @r0
+    nop
 
     ! restore registers
     lds.l   @r15+, pr
@@ -80,6 +88,10 @@ exit_k:
 	.long	_exit
 sp_bak:
     .long   _sp_bak
+cas_setup:
+    .long   _cas_setup
+cas_cleanup:
+    .long   _cas_cleanup
 
 .align 4
 .section .data
