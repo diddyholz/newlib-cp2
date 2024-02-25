@@ -126,7 +126,8 @@ _write(
 
 int
 _open(const char *path,
-  int flags)
+  int flags,
+  ...)
 {
   int ret = cas_open(path, flags_to_cas_flags(flags));
   return cas_error_to_errno(ret);
@@ -189,14 +190,14 @@ int
 _link(char *old, 
   char *new)
 {
-  _set_errno(ENOSYS);
+  errno = ENOSYS;
   return -1;
 }
 
 int
 _unlink()
 {
-  _set_errno(ENOSYS);
+  errno = ENOSYS;
   return -1;
 }
 
@@ -204,7 +205,7 @@ caddr_t
 _sbrk (int incr)
 {
   extern char end;		/* Defined by the linker */
-  _set_errno(ENOSYS);
+  errno = ENOSYS;
   return -1;
 }
 
@@ -217,7 +218,7 @@ _exit (int status)
 int
 _kill (pid_t n, int m)
 {
-  _set_errno(ENOSYS);
+  errno = ENOSYS;
   return -1;
 }
 
@@ -237,7 +238,7 @@ int
 _chmod (const char *path, 
   short mode)
 {
-  _set_errno(ENOSYS);
+  errno = ENOSYS;
   return -1;
 }
 
@@ -246,7 +247,7 @@ _chown (const char *path,
   short owner, 
   short group)
 {
-  _set_errno(ENOSYS);
+  errno = ENOSYS;
   return -1;
 }
 
@@ -254,14 +255,14 @@ int
 _utime (const char *path, 
   char *times)
 {
-  _set_errno(ENOSYS);
+  errno = ENOSYS;
   return -1;
 }
 
 int
 _fork ()
 {
-  _set_errno(ENOSYS);
+  errno = ENOSYS;
   return -1;
 }
 
@@ -269,28 +270,28 @@ int
 _wait (statusp)
      int *statusp;
 {
-  _set_errno(ENOSYS);
+  errno = ENOSYS;
   return -1;
 }
 
 int
 _execve (const char *path, char *const argv[], char *const envp[])
 {
-  _set_errno(ENOSYS);
+  errno = ENOSYS;
   return -1;
 }
 
 int
 _execv (const char *path, char *const argv[])
 {
-  _set_errno(ENOSYS);
+  errno = ENOSYS;
   return -1;
 }
 
 int
 _pipe (int *fd)
 {
-  _set_errno(ENOSYS);
+  errno = ENOSYS;
   return -1;
 }
 
@@ -299,7 +300,7 @@ _pipe (int *fd)
 clock_t
 _times (struct tms *tp)
 {
-  _set_errno(ENOSYS);
+  errno = ENOSYS;
   return -1;
 }
 
