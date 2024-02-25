@@ -1,5 +1,3 @@
-#include "sys/syscall.h"
-
 #include <_ansi.h>
 #include <sys/types.h>
 #include <sys/stat.h>
