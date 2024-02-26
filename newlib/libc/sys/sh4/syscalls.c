@@ -9,7 +9,7 @@
 #include "power.h"
 #include "tmu.h"
 
-uint32_t counter_underflows = 0;
+uint32_t counter_underflows __attribute__((section(".bootstrap.data"));
 
 /* setup hardware */
 void 
