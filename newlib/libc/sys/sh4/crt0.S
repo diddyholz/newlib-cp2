@@ -1,4 +1,4 @@
-.section .init
+.section .init.0
 .global	_start
 _start:
     ! init for hollyhock is only 16 bytes large
@@ -15,7 +15,7 @@ start_address:
 load_address:
 .long  _start
 
-.section .text
+.section .init.1
 actual_start:
     ! backup registers
     mov.l   r13, @-r15
@@ -92,8 +92,5 @@ cas_setup:
     .long   _cas_setup
 cas_cleanup:
     .long   _cas_cleanup
-
-.align 4
-.section .data
 _sp_bak:
     .long   1
