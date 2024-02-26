@@ -13,6 +13,7 @@ uint32_t counter_underflows = 0;
 
 /* setup hardware */
 void 
+__attribute__((section(".bootstrap.text")))
 cas_setup()
 {
   counter_underflows = 0;
