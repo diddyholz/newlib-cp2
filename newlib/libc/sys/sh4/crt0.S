@@ -1,4 +1,4 @@
-.section .init.0
+.section .init
 .global	_start
 _start:
     ! init for hollyhock is only 16 bytes large
@@ -15,7 +15,7 @@ start_address:
 load_address:
 .long  _start
 
-.section .init.1
+.section .bootstrap
 actual_start:
     ! backup registers
     mov.l   r13, @-r15
