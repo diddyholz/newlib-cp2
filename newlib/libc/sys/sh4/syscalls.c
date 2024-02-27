@@ -147,6 +147,12 @@ _read(
   char *ptr, 
   int len)
 {
+  /* Do not do anything for std streams */
+  if (file < 3) 
+  {
+    return 0;
+  }
+  
   int ret = cas_read(file, ptr, len);
   return cas_error_to_errno(ret);
 }
@@ -167,6 +173,18 @@ _write(
   char *ptr,
   int len)
 {
+  /* Do not do anything for stdin */
+  if (file == 0) 
+  {
+    return len;
+  }
+
+  /* stdout and stderr */
+  if (file < 3) 
+  {
+    
+  }
+
   int ret = cas_write(file, ptr, len);
   return cas_error_to_errno(ret);
 }
@@ -183,6 +201,12 @@ _open(const char *path,
 int
 _close(int file)
 {
+  /* Do not do anything for std streams */
+  if (file < 3) 
+  {
+    return 0;
+  }
+
   int ret = cas_close(file);
   return cas_error_to_errno(ret);
 }
