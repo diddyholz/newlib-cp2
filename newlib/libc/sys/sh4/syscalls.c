@@ -2,21 +2,41 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <sys/time.h>
+#include <string.h>
+#include <stdbool.h>
 #include <errno.h>
 #include <fcntl.h>
 #include "cas_file.h"
 #include "crt0.h"
 #include "power.h"
 #include "tmu.h"
+#include "lcd.h"
+
+#define DEBUG_CHAR_WIDTH 	8
+#define DEBUG_CHAR_HEIGHT	12
+#define DEBUG_LINE_HEIGHT	14
+
+#define DEBUG_MAX_COLS    30
+#define DEBUG_MAX_ROWS    30
+
+#define DEBUG_FONTBASE    0x8062F4C8
+
+#define DEBUG_COLOR_ERR   0xF800
+#define DEBUG_COLOR_OUT   0xFFFF
 
 uint32_t counter_underflows __attribute__((section(".bootstrap.data")));
+
+uint8_t print_col __attribute__((section(".bootstrap.data")));
+uint8_t print_row __attribute__((section(".bootstrap.data")));
 
 /* setup hardware */
 void 
 __attribute__((section(".bootstrap.text")))
-cas_setup()
+cas_setup ()
 {
   counter_underflows = 0;
+  print_col = 0;
+  print_row = 0;
 
   POWER_MSTPCR0->TMU = 0;
 
@@ -34,15 +54,89 @@ cas_setup()
 
 /* cleanup hardware */
 void 
-cas_cleanup()
+cas_cleanup ()
 {
   TMU_TSTR->raw = 0;
   POWER_MSTPCR0->TMU = 1;
 }
 
+void 
+debug_print_char (char character, 
+  uint8_t col, 
+  uint8_t row, 
+	uint16_t foreground, 
+  uint16_t background, 
+  bool enable_transparency)
+{
+	uint8_t charIndex = character - ' ';
+
+	// fill background with background color if it is not black
+	if(!enable_transparency || background)
+	{
+    for (uint8_t y = 0; y < DEBUG_LINE_HEIGHT; y++)
+    {
+      for (uint8_t x = 0; x < DEBUG_CHAR_WIDTH; x++)
+      {
+        FRAMEBUFFER[((y + row * DEBUG_LINE_HEIGHT) * LCD_WIDTH) 
+          + (x + col * DEBUG_CHAR_WIDTH)] = background;
+      }
+    }
+	}
+
+	// now draw the character
+	uint16_t *pixel = (uint16_t *)(DEBUG_FONTBASE + (0xC0 * charIndex));
+
+	const uint16_t tempXPos = col * DEBUG_CHAR_WIDTH;
+	const uint16_t tempYPos = row * DEBUG_LINE_HEIGHT + 1;
+
+	for (uint8_t iy = 0; iy < DEBUG_CHAR_HEIGHT; iy++)
+	{
+		for (uint8_t ix = 0; ix < DEBUG_CHAR_WIDTH; ix++)
+		{
+			if (*pixel == 0)
+			{
+				FRAMEBUFFER[((iy + tempYPos) * LCD_WIDTH) + (ix * tempXPos)] = foreground;
+			}
+			
+			pixel++;   
+		}
+	}
+}
+
+void
+debug_print_string (const char *str,
+  bool is_error)
+{
+  uint16_t color = is_error? DEBUG_COLOR_ERR : DEBUG_COLOR_OUT;
+
+  for (const char *c = str; *c; c++)
+  {
+    if (*c != '\n')
+    {
+      debug_print_char(*c, print_col, print_row, color, 0x0000, false);
+      print_col++;
+    }
+    else
+    {
+      print_col = DEBUG_MAX_COLS;
+    }
+
+    if (print_col >= DEBUG_MAX_COLS)
+    {
+      print_col = 0;
+      print_row++;
+
+      if (print_row >= DEBUG_MAX_ROWS)
+      {
+        print_row = 0;
+      }
+    }
+  }
+}
+
 /* convert cas file errors to errno */
 int 
-cas_error_to_errno(int cas_result) 
+cas_error_to_errno (int cas_result) 
 {
   if (cas_result >= 0) 
   {
@@ -99,7 +193,7 @@ cas_error_to_errno(int cas_result)
 
 /* convert open flags to cas flags */
 int 
-flags_to_cas_flags(int flags) 
+flags_to_cas_flags (int flags) 
 {  
   int cas_flags = 0;
   
@@ -152,7 +246,7 @@ _read(
   {
     return 0;
   }
-  
+
   int ret = cas_read(file, ptr, len);
   return cas_error_to_errno(ret);
 }
@@ -182,7 +276,10 @@ _write(
   /* stdout and stderr */
   if (file < 3) 
   {
+    debug_print_string(ptr, file == 2);
+    LCD_Refresh();
     
+    return len;
   }
 
   int ret = cas_write(file, ptr, len);
