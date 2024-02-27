@@ -105,15 +105,16 @@ debug_print_char (char character,
 
 void
 debug_print_string (const char *str,
+  int len,
   bool is_error)
 {
   uint16_t color = is_error? DEBUG_COLOR_ERR : DEBUG_COLOR_OUT;
 
-  for (const char *c = str; *c; c++)
+  for (int i = 0; i < len; i++)
   {
-    if (*c != '\n')
+    if (str[i] != '\n')
     {
-      debug_print_char(*c, print_col, print_row, color, 0x0000, false);
+      debug_print_char(str[i], print_col, print_row, color, 0x0000, false);
       print_col++;
     }
     else
@@ -276,7 +277,7 @@ _write(
   /* stdout and stderr */
   if (file < 3) 
   {
-    debug_print_string(ptr, file == 2);
+    debug_print_string(ptr, len, file == 2);
     LCD_Refresh();
     
     return len;
