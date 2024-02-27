@@ -236,6 +236,14 @@ access (const char *path,
   return 0;
 }
 
+int
+mkdir (const char *path, 
+  mode_t mode)
+{
+  int ret = cas_mkdir(path);
+  return cas_error_to_errno(ret);
+}
+
 int 
 _read(
   int file, 
