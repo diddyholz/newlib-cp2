@@ -300,7 +300,7 @@ int findNext(int findHandle, wchar_t *name, struct findInfo *findInfoBuf);
  * @param[out] buf The retrieved information about the file.
  * @return 0 on success, or a negative error code on failure.
  */
-int cas_fstat(int fd, struct stat *buf);
+int cas_fstat(int fd, struct cas_stat *buf);
 
 /**
  * Retrieves the memory address of a file.
@@ -384,7 +384,7 @@ int cas_rename(const char *oldPath, const char *newPath);
  * @param[out] buf The retrieved information about the file.
  * @return 0 on success, or a negative error code on failure.
  */
-int cas_stat(const char *path, struct stat *buf);
+int cas_stat(const char *path, struct cas_stat *buf);
 
 /**
  * Writes @c count bytes from @c buf to a file.

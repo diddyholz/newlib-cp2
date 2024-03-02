@@ -137,6 +137,26 @@ debug_add_string (const char *str,
 {
   for (int i = 0; i < len; i++)
   {
+    if (print_col < DEBUG_MAX_COLS)
+    {
+      goto print;
+    }
+
+    // Reached end of line
+    print_col = 0;
+    print_row++;
+    used_rows++;
+
+    if (print_row < DEBUG_MAX_ROWS)
+    {
+      goto print;
+    }
+
+    // Reached end of rows
+    print_row = 0;
+    used_rows = DEBUG_MAX_ROWS;
+
+print:
     if (str[i] != '\n')
     {
       debug_lines[print_row][print_col] = str[i];
@@ -147,25 +167,6 @@ debug_add_string (const char *str,
       debug_lines[print_row][print_col] = '\0';
       print_col = DEBUG_MAX_COLS;
     }
-
-    if (print_col < DEBUG_MAX_COLS)
-    {
-      continue;
-    }
-
-    // Reached end of line
-    print_col = 0;
-    print_row++;
-    used_rows++;
-
-    if (print_row < DEBUG_MAX_ROWS)
-    {
-      continue;
-    }
-
-    // Reached end of rows
-    print_row = 0;
-    used_rows = DEBUG_MAX_ROWS;
   }
 }
 
