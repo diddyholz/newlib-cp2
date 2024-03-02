@@ -195,22 +195,22 @@ debug_add_string (const char *str,
 {
   for (int i = 0; i < len; i++)
   {
+    if (str[i] == '\b')
+    {
+      debug_cursor_dec();
+      continue;
+    }
+
     debug_cursor_inc();
     
-    switch (str[i])
+    if (str[i] == '\n')
     {
-      case '\n':
-        debug_lines[print_row][print_col] = '\0';
-        print_col = DEBUG_MAX_COLS;
-        break;
-      case '\b':
-        debug_cursor_dec();
-        break;
-      
-      default:
-        debug_lines[print_row][print_col] = str[i];
-        break;
+      debug_lines[print_row][print_col] = '\0';
+      print_col = DEBUG_MAX_COLS;
+      continue;
     }
+
+    debug_lines[print_row][print_col] = str[i];
   }
 }
 
