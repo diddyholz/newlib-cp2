@@ -193,10 +193,10 @@ void
 debug_add_string (const char *str,
   int len)
 {
-  debug_cursor_inc();
-
   for (int i = 0; i < len; i++)
   {
+    debug_cursor_inc();
+    
     switch (str[i])
     {
       case '\n':
