@@ -27,7 +27,7 @@ uint32_t counter_underflows __attribute__((section(".bootstrap.data")));
 
 uint8_t print_col __attribute__((section(".bootstrap.data")));
 uint8_t print_row __attribute__((section(".bootstrap.data")));
-uint8_t used_rows __attribute__((section(".bootstrap.data")));
+uint32_t used_rows __attribute__((section(".bootstrap.data")));
 
 char debug_lines[DEBUG_MAX_ROWS][DEBUG_MAX_COLS];
 
@@ -37,9 +37,9 @@ __attribute__((section(".bootstrap.text")))
 cas_setup ()
 {
   counter_underflows = 0;
-  print_col = 0;
-  print_row = 0;
-  used_rows = 1;
+  print_col = UINT8_MAX;
+  print_row = UINT8_MAX;
+  used_rows = 0;
 
   POWER_MSTPCR0->TMU = 0;
 
@@ -67,15 +67,15 @@ void
 debug_print_char (char character, 
   uint8_t col, 
   uint8_t row, 
-	uint16_t foreground, 
+  uint16_t foreground, 
   uint16_t background, 
   bool enable_transparency)
 {
-	uint8_t charIndex = character - ' ';
+  uint8_t charIndex = character - ' ';
 
-	// fill background with background color if it is not black
-	if(!enable_transparency || background)
-	{
+  // fill background with background color if it is not black
+  if(!enable_transparency || background)
+  {
     for (uint8_t y = 0; y < DEBUG_LINE_HEIGHT; y++)
     {
       for (uint8_t x = 0; x < DEBUG_CHAR_WIDTH; x++)
@@ -84,26 +84,26 @@ debug_print_char (char character,
           + (x + col * DEBUG_CHAR_WIDTH)] = background;
       }
     }
-	}
+  }
 
-	// now draw the character
-	uint16_t *pixel = (uint16_t *)(DEBUG_FONTBASE + (0xC0 * charIndex));
+  // now draw the character
+  uint16_t *pixel = (uint16_t *)(DEBUG_FONTBASE + (0xC0 * charIndex));
 
-	const uint16_t tempXPos = col * DEBUG_CHAR_WIDTH;
-	const uint16_t tempYPos = row * DEBUG_LINE_HEIGHT + 1;
+  const uint16_t tempXPos = col * DEBUG_CHAR_WIDTH;
+  const uint16_t tempYPos = row * DEBUG_LINE_HEIGHT + 1;
 
-	for (uint8_t iy = 0; iy < DEBUG_CHAR_HEIGHT; iy++)
-	{
-		for (uint8_t ix = 0; ix < DEBUG_CHAR_WIDTH; ix++)
-		{
-			if (*pixel == 0)
-			{
-				FRAMEBUFFER[((iy + tempYPos) * LCD_WIDTH) + (ix + tempXPos)] = foreground;
-			}
-			
-			pixel++;   
-		}
-	}
+  for (uint8_t iy = 0; iy < DEBUG_CHAR_HEIGHT; iy++)
+  {
+    for (uint8_t ix = 0; ix < DEBUG_CHAR_WIDTH; ix++)
+    {
+      if (*pixel == 0)
+      {
+        FRAMEBUFFER[((iy + tempYPos) * LCD_WIDTH) + (ix + tempXPos)] = foreground;
+      }
+      
+      pixel++;   
+    }
+  }
 }
 
 void debug_print_line (const char *line, 
@@ -123,13 +123,13 @@ void debug_print_line (const char *line,
   }
 }
 
-void debug_print_all ()
+void debug_print_all (void)
 {
   for (uint8_t i = 0; i < DEBUG_MAX_ROWS && i < used_rows; i++)
   {
     int8_t line = i;
 
-    if (used_rows == (DEBUG_MAX_ROWS + 1))
+    if (used_rows > DEBUG_MAX_ROWS)
     {
       line = (DEBUG_MAX_ROWS - 1) - print_row + i;
       line %= DEBUG_MAX_ROWS;
@@ -139,44 +139,77 @@ void debug_print_all ()
   }
 }
 
+void debug_cursor_inc (void)
+{
+  print_col++;
+
+  if (print_col < DEBUG_MAX_COLS)
+  {
+    return;
+  }
+
+  // Reached end of line
+  print_col = 0;
+  print_row++;
+  used_rows++;
+
+  if (print_row < DEBUG_MAX_ROWS)
+  {
+    return;
+  }
+
+  // Reached end of rows
+  print_row = 0;
+}
+
+void debug_cursor_dec (void)
+{
+  // Check if at startup
+  if (print_col == 0 && used_rows == 1)
+  {
+    return;
+  }
+
+  print_col--;
+
+  if (print_col < DEBUG_MAX_COLS)
+  {
+    return;
+  }
+
+  print_col = DEBUG_MAX_COLS - 1;
+  print_row--;
+  used_rows--;
+
+  if (print_row < DEBUG_MAX_ROWS)
+  {
+    return;
+  }
+
+  print_row = DEBUG_MAX_ROWS - 1;
+}
+
 void
 debug_add_string (const char *str,
   int len)
 {
+  debug_cursor_inc();
+
   for (int i = 0; i < len; i++)
   {
-    if (print_col < DEBUG_MAX_COLS)
+    switch (str[i])
     {
-      goto print;
-    }
-
-    // Reached end of line
-    print_col = 0;
-    print_row++;
-
-    if (used_rows <= DEBUG_MAX_ROWS)
-    {
-      used_rows++;
-    }
-
-    if (print_row < DEBUG_MAX_ROWS)
-    {
-      goto print;
-    }
-
-    // Reached end of rows
-    print_row = 0;
-
-print:
-    if (str[i] != '\n')
-    {
-      debug_lines[print_row][print_col] = str[i];
-      print_col++;
-    }
-    else
-    {
-      debug_lines[print_row][print_col] = '\0';
-      print_col = DEBUG_MAX_COLS;
+      case '\n':
+        debug_lines[print_row][print_col] = '\0';
+        print_col = DEBUG_MAX_COLS;
+        break;
+      case '\b':
+        debug_cursor_dec();
+        break;
+      
+      default:
+        debug_lines[print_row][print_col] = str[i];
+        break;
     }
   }
 }
