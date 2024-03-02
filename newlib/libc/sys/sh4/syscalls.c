@@ -201,15 +201,19 @@ debug_add_string (const char *str,
       continue;
     }
 
-    debug_cursor_inc();
-    
     if (str[i] == '\n')
     {
-      debug_lines[print_row][print_col] = '\0';
+      if (print_row < (DEBUG_MAX_COLS - 1))
+      {
+        print_col++;
+        debug_lines[print_row][print_col] = '\0';
+      }
+
       print_col = DEBUG_MAX_COLS;
       continue;
     }
 
+    debug_cursor_inc();
     debug_lines[print_row][print_col] = str[i];
   }
 }
