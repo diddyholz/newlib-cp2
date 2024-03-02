@@ -132,9 +132,10 @@ void debug_print_all ()
     if (used_rows == DEBUG_MAX_ROWS)
     {
       line += print_row;
+      line %= DEBUG_MAX_ROWS;
     }
 
-    debug_print_line(debug_lines[(print_row + i) % DEBUG_MAX_ROWS], i);
+    debug_print_line(debug_lines[line], i);
   }
 }
 
