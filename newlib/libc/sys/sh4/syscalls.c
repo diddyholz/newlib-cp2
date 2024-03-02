@@ -21,13 +21,15 @@
 
 #define DEBUG_FONTBASE    0x8062F4C8
 
-#define DEBUG_COLOR_ERR   0xF800
 #define DEBUG_COLOR_OUT   0xFFFF
 
 uint32_t counter_underflows __attribute__((section(".bootstrap.data")));
 
 uint8_t print_col __attribute__((section(".bootstrap.data")));
 uint8_t print_row __attribute__((section(".bootstrap.data")));
+uint8_t used_rows __attribute__((section(".bootstrap.data")));
+
+char debug_lines[DEBUG_MAX_ROWS][DEBUG_MAX_COLS];
 
 /* setup hardware */
 void 
@@ -37,6 +39,7 @@ cas_setup ()
   counter_underflows = 0;
   print_col = 0;
   print_row = 0;
+  used_rows = 1;
 
   POWER_MSTPCR0->TMU = 0;
 
@@ -103,35 +106,66 @@ debug_print_char (char character,
 	}
 }
 
-void
-debug_print_string (const char *str,
-  int len,
-  bool is_error)
+void debug_print_line (const char *line, 
+    uint8_t row)
 {
-  uint16_t color = is_error? DEBUG_COLOR_ERR : DEBUG_COLOR_OUT;
+  bool end = false;
 
+  for (uint8_t i = 0; i < DEBUG_MAX_COLS; i++)
+  {
+    if (line[i] == '\0')
+    {
+      end = true;
+    }
+    
+    const char char_to_print = end? ' ' : line[i];
+    debug_print_char(char_to_print, i, row, DEBUG_COLOR_OUT, 0x0000, false);
+  }
+}
+
+void debug_print_all ()
+{
+  for (uint8_t i = 0; i < (used_rows + 1); i++)
+  {
+    debug_print_line(debug_lines[print_row + i], i);
+  }
+}
+
+void
+debug_add_string (const char *str,
+  int len)
+{
   for (int i = 0; i < len; i++)
   {
     if (str[i] != '\n')
     {
-      debug_print_char(str[i], print_col, print_row, color, 0x0000, false);
+      debug_lines[print_row][print_col] = str[i];
       print_col++;
     }
     else
     {
+      debug_lines[print_row][print_col] = '\0';
       print_col = DEBUG_MAX_COLS;
     }
 
-    if (print_col >= DEBUG_MAX_COLS)
+    if (print_col < DEBUG_MAX_COLS)
     {
-      print_col = 0;
-      print_row++;
-
-      if (print_row >= DEBUG_MAX_ROWS)
-      {
-        print_row = 0;
-      }
+      continue;
     }
+
+    // Reached end of line
+    print_col = 0;
+    print_row++;
+    used_rows++;
+
+    if (print_row < DEBUG_MAX_ROWS)
+    {
+      continue;
+    }
+
+    // Reached end of rows
+    print_row = 0;
+    used_rows = DEBUG_MAX_ROWS;
   }
 }
 
@@ -285,7 +319,8 @@ _write(
   /* stdout and stderr */
   if (file < 3) 
   {
-    debug_print_string(ptr, len, file == 2);
+    debug_add_string(ptr, len);
+    debug_print_all();
     LCD_Refresh();
     
     return len;
