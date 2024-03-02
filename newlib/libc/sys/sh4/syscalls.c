@@ -155,11 +155,17 @@ void debug_cursor_inc (void)
 
   if (print_row < DEBUG_MAX_ROWS)
   {
-    return;
+    goto clear_row;
   }
 
   // Reached end of rows
   print_row = 0;
+
+clear_row:
+  for (uint8_t i = 0; i < DEBUG_MAX_COLS; i++)
+  {
+    debug_lines[print_row][i] = '\0';
+  }
 }
 
 void debug_cursor_dec (void)
@@ -203,12 +209,6 @@ debug_add_string (const char *str,
 
     if (str[i] == '\n')
     {
-      if (print_row < (DEBUG_MAX_COLS - 1))
-      {
-        print_col++;
-        debug_lines[print_row][print_col] = '\0';
-      }
-
       print_col = DEBUG_MAX_COLS;
       continue;
     }
