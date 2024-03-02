@@ -125,7 +125,7 @@ void debug_print_line (const char *line,
 
 void debug_print_all ()
 {
-  for (uint8_t i = 0; i < used_rows; i++)
+  for (uint8_t i = 0; i < DEBUG_MAX_ROWS && i < used_rows; i++)
   {
     int8_t line = i;
 
