@@ -166,7 +166,6 @@ debug_add_string (const char *str,
 
     // Reached end of rows
     print_row = 0;
-    used_rows = DEBUG_MAX_ROWS;
 
 print:
     if (str[i] != '\n')
