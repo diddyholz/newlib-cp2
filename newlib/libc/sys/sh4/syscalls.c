@@ -153,7 +153,11 @@ debug_add_string (const char *str,
     // Reached end of line
     print_col = 0;
     print_row++;
-    used_rows++;
+
+    if (used_rows < DEBUG_MAX_ROWS)
+    {
+      used_rows++;
+    }
 
     if (print_row < DEBUG_MAX_ROWS)
     {
