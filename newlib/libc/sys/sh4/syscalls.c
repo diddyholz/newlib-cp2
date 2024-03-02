@@ -127,6 +127,13 @@ void debug_print_all ()
 {
   for (uint8_t i = 0; i < used_rows; i++)
   {
+    uint8_t line = i;
+
+    if (used_rows == DEBUG_MAX_ROWS)
+    {
+      line += print_row;
+    }
+
     debug_print_line(debug_lines[(print_row + i) % DEBUG_MAX_ROWS], i);
   }
 }
