@@ -125,9 +125,9 @@ void debug_print_line (const char *line,
 
 void debug_print_all ()
 {
-  for (uint8_t i = 0; i < (used_rows + 1); i++)
+  for (uint8_t i = 0; i < used_rows; i++)
   {
-    debug_print_line(debug_lines[print_row + i], i);
+    debug_print_line(debug_lines[(print_row + i) % DEBUG_MAX_ROWS], i);
   }
 }
 
