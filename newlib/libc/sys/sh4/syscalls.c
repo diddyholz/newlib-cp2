@@ -16,7 +16,7 @@
 #define DEBUG_CHAR_HEIGHT	12
 #define DEBUG_LINE_HEIGHT	14
 
-#define DEBUG_MAX_COLS    39
+#define DEBUG_MAX_COLS    40
 #define DEBUG_MAX_ROWS    37
 
 #define DEBUG_FONTBASE    0x8062F4C8
