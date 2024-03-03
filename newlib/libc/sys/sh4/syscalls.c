@@ -37,8 +37,8 @@ __attribute__((section(".bootstrap.text")))
 cas_setup ()
 {
   counter_underflows = 0;
-  print_col = UINT8_MAX;
-  print_row = UINT8_MAX;
+  print_col = DEBUG_MAX_COLS;
+  print_row = DEBUG_MAX_ROWS;
   used_rows = 0;
 
   POWER_MSTPCR0->TMU = 0;
