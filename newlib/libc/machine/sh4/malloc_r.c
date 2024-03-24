@@ -21,16 +21,18 @@ _free_r (struct _reent *reent,
 
 void *
 _calloc_r (struct _reent *reent, 
+    size_t num,
     size_t size) 
 {
-    void *block = _malloc_r(reent, size);
-    return memset(block, 0, size);
+    void *block = _malloc_r(reent, num * size);
+    return memset(block, 0, num * size);
 }
 
 void *
-calloc (size_t size) 
+calloc (size_t num,
+    size_t size) 
 {
-    return _calloc_r(_REENT, size);
+    return _calloc_r(_REENT, num, size);
 }
 
 void *
