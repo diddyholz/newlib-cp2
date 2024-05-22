@@ -303,6 +303,9 @@ void cas_stat_to_stat (struct cas_stat *cas_st,
   st->st_size = cas_st->fileSize;
 } 
 
+int _open(const char *, int, ...);
+int _close(int);
+
 int
 access (const char *path,
   int mode)
@@ -466,7 +469,7 @@ caddr_t
 _sbrk (int incr)
 {
   errno = ENOSYS;
-  return -1;
+  return (caddr_t)-1;
 }
 
 void
